@@ -2,12 +2,20 @@ package com.josiahebhomenye.sound;
 
 public interface WaveFunctions {
 
+    default  float sin(float x){
+        return (float)Math.sin(x);
+    }
+
     default float sin(float a, float f, float t){
         return a * (float)Math.sin(2 * Math.PI * f * t);
     }
 
     default float cos(float a, float f, float t){
         return a * (float)Math.cos(2 * Math.PI * f * t);
+    }
+
+    default float cos(float x){
+        return (float)Math.cos(x);
     }
 
     default float sin(float f, float t){

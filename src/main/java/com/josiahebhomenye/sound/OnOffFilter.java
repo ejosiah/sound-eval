@@ -1,21 +1,30 @@
 package com.josiahebhomenye.sound;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 public class OnOffFilter extends SoundFilter {
 
 
-    private final int offSamples;
-    private final int onSamples;
-    private int aSwitch;
-    private int count;
 
-    protected OnOffFilter(float on, float off) {
+    private int count;
+    private Switch curSwitch;
+    private CyclingIterator<Switch> itr;
+
+    protected OnOffFilter(double... timeCycles) {
         int frameSize = format.getFrameSize();
         int sampleSize = frameSize/format.getChannels();
-        this.offSamples = (int)(format.getFrameRate() * sampleSize * off/sampleSize);
-        this.onSamples = (int)(format.getFrameRate() * sampleSize * on/sampleSize);
-        this.aSwitch = on <= 0 ? 0 : 1;
+
+        Switch.State state = Switch.State.ON;
+
+        Switch[] switches = new Switch[timeCycles.length];
+        for(int i = 0; i < timeCycles.length; i++){
+            double time = timeCycles[i];
+            switches[i] = new Switch((int)(format.getFrameRate() * sampleSize * time/sampleSize), state);
+            state = state.invert();
+        }
+        itr = new CyclingIterator<>(switches);
+        curSwitch = itr.next();
     }
 
     @Override
@@ -23,22 +32,19 @@ public class OnOffFilter extends SoundFilter {
         int nChannels = format.getChannels();
         int n = length/(format.getSampleSizeInBits()/8);
         for(int i = offset; i < n; i += nChannels, count++){
+            toggleSwitch();
             for(int j = 0; j < nChannels; j++){
                 int index = i + j;
-                int sample = aSwitch * get(samples, index);
+                int sample = curSwitch.state.value * get(samples, index);
                 set(samples, sample, index);
             }
-            toggleSwitch();
         }
 
     }
 
     private void toggleSwitch(){
-        if(aSwitch == 1 && offSamples != 0 && onSamples != 0 && count%onSamples == 0){
-            aSwitch = 0;
-            count = 0;
-        }else if(aSwitch == 0 && onSamples != 0 && offSamples != 0 && count%offSamples == 0){
-            aSwitch = 1;
+        if(count >= curSwitch.duration){
+            curSwitch = itr.next();
             count = 0;
         }
     }

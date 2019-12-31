@@ -6,10 +6,10 @@ public class Composer {
 
     public static void main(String[] args) throws Exception{
         Duration duration = Duration.ofSeconds(20);
-        SoundGenerator tone = new SineGenerator(440, duration);
-        SoundFilter filter = new OnOffFilter(2.0f, 4.0f);
-        SamplesUtil.save( filter.filter(tone.samples()), tone.format(), "sine.wav");
-      //  SamplesUtil.save( tone.samples(), tone.format(), "sine.wav");
+        SoundGenerator sound = new SineGenerator(400, duration);
+        SoundFilter filter = new OnOffFilter(0.4, 0.2, 0.4, 2.0);
+        SamplesUtil.save( filter.filter(sound.samples()), sound.format(), "sine.wav");
+      //  SamplesUtil.save( sound.samples(), sound.format(), "sine.wav");
         System.out.println("done");
     }
 }

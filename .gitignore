@@ -11,3 +11,4 @@ gradlew.bat
 **/*.sc
 **/log*.dat
 **/state*.dat
+**/*.wav

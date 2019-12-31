@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.util.Arrays;
 
 import static java.nio.ByteOrder.*;
@@ -37,6 +38,14 @@ public class SamplesUtil {
         }else if(format.getSampleSizeInBits() == Integer.SIZE){
             buf.asIntBuffer().put(index, sample);
         }
+    }
 
+    public static Duration getDuration(AudioFileFormat format){
+        long durationInSeconds = (long)(format.getFrameLength()/(format.getFormat().getFrameRate() * format.getFormat().getFrameSize()));
+        return Duration.ofSeconds(durationInSeconds);
+    }
+
+    public static long length(byte[] samples, AudioFormat format){
+        return  samples.length/format.getFrameSize();
     }
 }
