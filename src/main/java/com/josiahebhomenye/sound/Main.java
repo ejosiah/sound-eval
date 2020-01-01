@@ -12,11 +12,11 @@ public class Main {
 
     public static void main(String[] args)  throws Exception{
 
-        File file = new File("sine.wav");
+        File file = new File("constant.wav");
         AudioFileFormat format =  AudioSystem.getAudioFileFormat(file);
         AudioInputStream in = AudioSystem.getAudioInputStream(file);
 
-        // nSamples = (SampleRate * duration * FrameSize)/(SampleSizeInBits/8) as int
+        // nFrames = (SampleRate * duration * FrameSize)/(SampleSizeInBits/8) as int
 
         byte[] buf = new byte[format.getFrameLength()];
 

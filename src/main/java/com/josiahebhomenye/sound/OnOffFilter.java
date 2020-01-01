@@ -5,8 +5,6 @@ import java.util.Arrays;
 
 public class OnOffFilter extends SoundFilter {
 
-
-
     private int count;
     private Switch curSwitch;
     private CyclingIterator<Switch> itr;

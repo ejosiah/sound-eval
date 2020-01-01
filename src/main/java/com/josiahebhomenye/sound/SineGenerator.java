@@ -4,14 +4,14 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 
 public class SineGenerator extends SoundGenerator implements WaveFunctions {
-    private final float amplitude;
-    private final float frequency;
+    private final double amplitude;
+    private final double frequency;
 
-    public SineGenerator(float frequency, Duration duration){
+    public SineGenerator(double frequency, Duration duration){
         this(1, frequency, duration);
     }
 
-    public SineGenerator(float amplitude, float frequency, Duration duration) {
+    public SineGenerator(double amplitude, double frequency, Duration duration) {
         super(duration);
         this.frequency = frequency;
         this.amplitude = amplitude;
@@ -20,8 +20,8 @@ public class SineGenerator extends SoundGenerator implements WaveFunctions {
     @Override
     public void generate() {
        for(int i = 0; i < nSamples; i++){
-           float t = i * timeStep;
-           float sample = sin(frequency, t);
+           double t = i * timeStep;
+           double sample = sin(frequency, t);
            channels.write(sample);
        }
     }

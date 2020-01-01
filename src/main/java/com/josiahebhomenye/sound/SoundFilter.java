@@ -6,8 +6,9 @@ import java.time.Duration;
 public abstract class SoundFilter implements Sound {
 
     protected AudioFormat format;
-    protected float duration;
-    protected float timeStep;
+    protected double duration;
+    protected double timeStep;
+    protected int nFrames;
     protected int nSamples;
     protected int index;
 
@@ -23,7 +24,8 @@ public abstract class SoundFilter implements Sound {
         this.format = format;
         this.duration = duration.toMillis()/1000.0f;
         this.timeStep = 1/format.getSampleRate();
-        this.nSamples = (int)(format.getFrameRate() * format.getFrameSize() * this.duration/(format.getSampleSizeInBits()/8));
+        this.nFrames = (int)(format.getFrameRate() * format.getFrameSize() * this.duration/(format.getSampleSizeInBits()/8));
+        this.nSamples = nFrames/format.getChannels();
         this.index = 0;
     }
 

@@ -12,7 +12,7 @@ public class DecayFilter extends SoundFilter {
     @Override
     public void filter(byte[] samples, int offset, int length) {
         for(int i = offset; i < length; i++, index++){
-            float t = index * timeStep;
+            double t = index * timeStep;
             samples[i] *= Math.exp(-t);
         }
         index %= nSamples;

@@ -12,10 +12,11 @@ public class DialTone extends SoundGenerator implements WaveFunctions {
 
     @Override
     public void generate() {
-        for(int i = 0; i < nSamples; i++){
-            float t = i * timeStep;
-            float sample = (float)(sin(350, t) + 0.1 * sin(440, t));
-            channels.write(sample);
-        }
+//        for(int i = 0; i < nSamples; i++){
+//            double t = i * timeStep;
+//            double sample = sin(350, t) + 0.1 * sin(440, t);
+//            channels.write(sample);
+//        }
+//        filter.filter(buffer.array());
     }
 }

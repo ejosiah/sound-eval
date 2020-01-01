@@ -21,9 +21,9 @@ public abstract class SoundGenerator implements Sound {
     protected final Channels channels;
     protected final int sampleSizeInBits;
     protected final int nSamples;
-    protected final float duration;
-    protected final float timeStep;
-    protected final float frameSize;
+    protected final double duration;
+    protected final double timeStep;
+    protected final double frameSize;
 
     private boolean generated;
 
@@ -67,7 +67,7 @@ public abstract class SoundGenerator implements Sound {
             IntStream.range(0, nChannels).forEach(i -> add(new Channel()));
         }
 
-        void write(float sample){
+        void write(double sample){
             forEach(c -> c.write(sample));
         }
 
@@ -82,7 +82,7 @@ public abstract class SoundGenerator implements Sound {
 
    private final class Channel{
 
-        void write(float sample){
+        void write(double sample){
             if(sampleSizeInBits== Short.SIZE){
                 buffer.putShort((short)(sample * Short.MAX_VALUE));
             }else if(sampleSizeInBits == Integer.SIZE){

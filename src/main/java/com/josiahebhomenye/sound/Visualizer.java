@@ -48,7 +48,7 @@ public class Visualizer extends JFrame {
     }
 
     class Canvas extends JPanel{
-        private float resolution;
+        private double resolution;
         private byte[] data;
         private byte[] view;
         private AudioFormat format;
@@ -87,16 +87,16 @@ public class Visualizer extends JFrame {
 
             ShortBuffer sb = buffer.asShortBuffer();
             int length = sb.limit();
-            float steps = (float)getWidth()/length;
+            double steps = (double)getWidth()/length;
             int prevX = 0;
             int prevY = getHeight()/2;
             clear(g, Color.BLACK);
             g.setColor(Color.GREEN);
             int nChannels = format.getChannels();
             for(int i = 0; i < length; i+=nChannels){
-                float sample = sb.get(i);
+                double sample = sb.get(i);
                 int x = (int)(steps * i);
-                int y = (int)((sample / (float)Short.MAX_VALUE) * getHeight() * 0.5) + (int)(getHeight() * 0.5);
+                int y = (int)((sample / (double)Short.MAX_VALUE) * getHeight() * 0.5) + (int)(getHeight() * 0.5);
 
 
                 g.drawLine(prevX, prevY, x, y);
