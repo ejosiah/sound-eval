@@ -24,6 +24,8 @@ public abstract class SoundGenerator implements Sound {
     protected final double duration;
     protected final double timeStep;
     protected final double frameSize;
+    int pos;
+    protected final byte[] samples;
 
     private boolean generated;
 
@@ -38,8 +40,8 @@ public abstract class SoundGenerator implements Sound {
         this.frameSize = format.getFrameSize();
         int size = (int)(this.duration * format.getFrameRate() * format.getFrameSize());
         this.nSamples = (int)(size/frameSize);
-        byte[] data = new byte[size];
-        this.buffer = ByteBuffer.wrap(data).order(format.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+        samples = new byte[size];
+        this.buffer = ByteBuffer.wrap(samples).order(format.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
         this.channels = new Channels(format.getChannels());
         this.sampleSizeInBits = format.getSampleSizeInBits();
     }
@@ -48,7 +50,8 @@ public abstract class SoundGenerator implements Sound {
 
     public byte[] samples(){
         ensureGenerated();
-        return Arrays.copyOf(buffer.array(), buffer.limit());
+      //  return Arrays.copyOf(buffer.array(), buffer.limit());
+        return Arrays.copyOf(samples, samples.length);
     }
 
     public AudioFormat format(){
@@ -79,12 +82,22 @@ public abstract class SoundGenerator implements Sound {
             forEach(c -> c.writeInt(sample));
         }
     }
-
+    static int x = 0;
    private final class Channel{
+
+
 
         void write(double sample){
             if(sampleSizeInBits== Short.SIZE){
-                buffer.putShort((short)(sample * Short.MAX_VALUE));
+                short sSample = SamplesUtil.convertToShort(sample);
+                byte[] data = Bits.shortToBytes(sSample, format.isBigEndian());
+                System.arraycopy(data, 0, samples, pos, data.length);
+                pos += data.length;
+                if(x < 20 && x%2 == 0){
+                    System.out.printf("f: %s, s: %s, b: %s\n", sample, sSample, Arrays.toString(data));
+                }
+                    x++;
+            //    buffer.putShort(sSample);
             }else if(sampleSizeInBits == Integer.SIZE){
                 buffer.putInt((short)(sample * Short.MAX_VALUE));
             }

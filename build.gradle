@@ -12,7 +12,6 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.typesafe.akka', name: 'akka-stream_2.13', version: '2.6.1'
     compile group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.0.0-RC7'
     compile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 

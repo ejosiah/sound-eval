@@ -12,7 +12,7 @@ public interface Sound {
     float DEFAULT_FRAME_RATE = 44100;
     int DEFAULT_SAMPLE_SIZE_IN_BITS = 16;
     int DEFAULT_CHANNELS = 2;
-    int DEFAULT_FRAME_SIZE = 4;
+    int DEFAULT_FRAME_SIZE = (DEFAULT_SAMPLE_SIZE_IN_BITS/8) * DEFAULT_CHANNELS;
     boolean IS_BIG_ENDIAN = false;
 
     AudioFormat DEFAULT_FORMAT = new AudioFormat(
