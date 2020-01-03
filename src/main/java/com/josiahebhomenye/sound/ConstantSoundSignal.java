@@ -14,6 +14,6 @@ public class ConstantSoundSignal extends SoundGenerator {
 
     @Override
     public void generate() {
-      //  IntStream.range(0, nSamples).forEach(i -> channels.writeInt(value));
+        IntStream.range(0, nSamples).forEach(i -> channels.writeInt(value));
     }
 }
