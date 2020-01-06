@@ -8,13 +8,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import static java.nio.ByteOrder.BIG_ENDIAN;
-import static java.nio.ByteOrder.LITTLE_ENDIAN;
+import static java.nio.ByteOrder.*;
 
 public class SamplesUtil {
 
@@ -90,8 +91,55 @@ public class SamplesUtil {
         return (int)(num/denum + a);
     }
 
-    public static double scaleToUnit(double x, double min, double max){
+    public static Double scaleToUnit(double x, double min, double max){
         return (2 * (x - min))/(max - min) - 1;
+    }
+
+    public static float[] convertToFloats(byte[] samples, AudioFormat format){
+        ByteBuffer buf = ByteBuffer.wrap(samples).order(format.isBigEndian() ? BIG_ENDIAN : LITTLE_ENDIAN);
+        if(format.getSampleSizeInBits() == Short.SIZE){
+            return convert(buf.asShortBuffer());
+        }else if(format.getSampleSizeInBits() == Integer.SIZE){
+            return convert(buf.asIntBuffer());
+        }else {
+            float[] fSamples = new float[samples.length];
+            for(int i = 0; i < samples.length; i++){
+                fSamples[i] = scaleToUnit(samples[i], Byte.MIN_VALUE, Byte.MAX_VALUE).floatValue();
+            }
+            return fSamples;
+        }
+    }
+
+    private static float[] convert(ShortBuffer buffer){
+        float[] fSamples = new float[buffer.limit()];
+        for(int i = 0; i < fSamples.length; i++){
+            fSamples[i] = scaleToUnit(buffer.get(), Short.MIN_VALUE, Short.MAX_VALUE).floatValue();
+        }
+        return fSamples;
+    }
+
+    private static float[] convert(IntBuffer buffer){
+        float[] fSamples = new float[buffer.limit()];
+        for(int i = 0; i < fSamples.length; i++){
+            fSamples[i] = scaleToUnit(buffer.get(), Integer.MIN_VALUE, Integer.MAX_VALUE).floatValue();
+        }
+        return fSamples;
+    }
+
+    public static byte[] convertToBites(float[] samples, AudioFormat format){
+        int sampleSize = format.getSampleSizeInBits();
+        byte[] bSample = new byte[samples.length * (sampleSize/Byte.SIZE)];
+        ByteBuffer buf = ByteBuffer.wrap(bSample).order(format.isBigEndian()? BIG_ENDIAN : LITTLE_ENDIAN);
+        for(int i = 0; i < samples.length; i++){
+            if(sampleSize == Short.SIZE){
+                short sample = convertToShort(samples[i]);
+                buf.asShortBuffer().put(i, sample);
+            }else if(sampleSize == Integer.SIZE){
+                int sample = convertToInt(samples[i]);
+                buf.asIntBuffer().put(i, sample);
+            }
+        }
+        return buf.array();
     }
 
 

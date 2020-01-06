@@ -1,11 +1,6 @@
 package com.josiahebhomenye.sound;
 
-import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.Duration;
@@ -24,8 +19,6 @@ public abstract class SoundGenerator implements Sound {
     protected final double duration;
     protected final double timeStep;
     protected final double frameSize;
-    int pos;
-    protected final byte[] samples;
 
     private boolean generated;
 
@@ -40,8 +33,8 @@ public abstract class SoundGenerator implements Sound {
         this.frameSize = format.getFrameSize();
         int size = (int)(this.duration * format.getFrameRate() * format.getFrameSize());
         this.nSamples = (int)(size/frameSize);
-        samples = new byte[size];
-        this.buffer = ByteBuffer.wrap(samples).order(format.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+        byte[] data = new byte[size];
+        this.buffer = ByteBuffer.wrap(data).order(format.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
         this.channels = new Channels(format.getChannels());
         this.sampleSizeInBits = format.getSampleSizeInBits();
     }
@@ -50,8 +43,11 @@ public abstract class SoundGenerator implements Sound {
 
     public byte[] samples(){
         ensureGenerated();
-      //  return Arrays.copyOf(buffer.array(), buffer.limit());
-        return Arrays.copyOf(samples, samples.length);
+        return Arrays.copyOf(buffer.array(), buffer.limit());
+    }
+
+    public float[] fSamples(){
+        return SamplesUtil.convertToFloats(samples(), format);
     }
 
     public AudioFormat format(){
@@ -82,24 +78,14 @@ public abstract class SoundGenerator implements Sound {
             forEach(c -> c.writeInt(sample));
         }
     }
-    static int x = 0;
+
    private final class Channel{
-
-
 
         void write(double sample){
             if(sampleSizeInBits== Short.SIZE){
-                short sSample = SamplesUtil.convertToShort(sample);
-                byte[] data = Bits.shortToBytes(sSample, format.isBigEndian());
-                System.arraycopy(data, 0, samples, pos, data.length);
-                pos += data.length;
-                if(x < 20 && x%2 == 0){
-                    System.out.printf("f: %s, s: %s, b: %s\n", sample, sSample, Arrays.toString(data));
-                }
-                    x++;
-            //    buffer.putShort(sSample);
+                buffer.putShort(SamplesUtil.convertToShort(sample));
             }else if(sampleSizeInBits == Integer.SIZE){
-                buffer.putInt((short)(sample * Short.MAX_VALUE));
+                buffer.putInt(SamplesUtil.convertToInt(sample));
             }
         }
 

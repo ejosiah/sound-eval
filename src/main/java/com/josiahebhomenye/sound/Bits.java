@@ -2,6 +2,11 @@ package com.josiahebhomenye.sound;
 
 public class Bits {
 
+    public static byte getByte(int sample, int index, boolean bigEndian){
+        if(index < 0 || index > 3) throw new IndexOutOfBoundsException(String.format("%s is out of range 0:3", index));
+        return (byte)(sample << (index * 8));
+    }
+
     public static byte[] shortToBytes(short sample, boolean bigEndian){
         byte[] buf =  new byte[2];
         shortToBytes(sample, buf, bigEndian);

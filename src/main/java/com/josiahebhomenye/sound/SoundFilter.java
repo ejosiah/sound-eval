@@ -42,6 +42,11 @@ public abstract class SoundFilter implements Sound {
         return samples;
     }
 
+    public float[] filter(float[] samples){
+        byte[] filtered = filter(SamplesUtil.convertToBites(samples, format));
+        return SamplesUtil.convertToFloats(filtered, format);
+    }
+
     public abstract void filter(byte[] samples, int offset, int length);
 
     public AudioFormat format(){

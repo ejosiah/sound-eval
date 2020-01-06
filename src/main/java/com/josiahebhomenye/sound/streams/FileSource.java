@@ -30,8 +30,7 @@ public class FileSource extends AudioSource {
     @Override
     protected float nextSample() {
         if(buffer.hasRemaining()){
-            float sample = (float)SamplesUtil.scaleToUnit(buffer.getShort(), Short.MIN_VALUE, Short.MAX_VALUE);
-            return sample;
+            return SamplesUtil.scaleToUnit(buffer.getShort(), Short.MIN_VALUE, Short.MAX_VALUE).floatValue();
         }else{
             stop();
             return 0;

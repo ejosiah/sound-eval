@@ -12,7 +12,7 @@ import javax.sound.sampled.AudioFormat;
 @Getter
 @Accessors(fluent = true)
 public abstract class AudioFilter implements Sound, Function<Float, Float> {
-    private final AudioFormat format;
+    protected final AudioFormat format;
 
     protected AudioFilter(){
         this(DEFAULT_FORMAT);
