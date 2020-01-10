@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args)  throws Exception{
 
-        File file = new File("saw_tooth.wav");
+        File file = new File("explosion.wav");
         AudioFileFormat format =  AudioSystem.getAudioFileFormat(file);
         AudioInputStream in = AudioSystem.getAudioInputStream(file);
 
@@ -38,9 +38,7 @@ public class Main {
 
     static void printFields(Object object, int depth){
         List<Method> getters =
-                Arrays.stream(object.getClass().getMethods())
-                    .filter(Main::isGetter)
-                    .collect(Collectors.toList());
+                Arrays.stream(object.getClass().getMethods()).filter(Main::isGetter).collect(Collectors.toList());
 
         if(getters.isEmpty()){
             System.out.printf(" %s\n", object);

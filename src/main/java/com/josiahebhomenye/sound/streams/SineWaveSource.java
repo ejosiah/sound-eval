@@ -8,7 +8,7 @@ public class SineWaveSource extends AudioSource implements WaveFunctions {
 
     private final float frequency;
 
-    static  int x = 0;
+    static int x = 0;
 
     @Override
     protected float nextSample() {

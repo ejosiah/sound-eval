@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class Composer {
 
     public static void main(String[] args) throws Exception{
-        Duration duration = Duration.ofSeconds(3);
+        Duration duration = Duration.ofSeconds(5);
      //   SoundGenerator sound = new ConstantSoundSignal(Short.MAX_VALUE, duration);
      //   SoundGenerator sound = new OverTones(1760, 4, duration);
      //   SoundGenerator sound = new BusySignal(duration);
@@ -19,10 +19,10 @@ public class Composer {
       //  SamplesUtil.save( filter.filter(sound.samples()), sound.format(), "sine.wav");
 
        // SoundFilter filter = new LineFilter(Duration.ofSeconds(1), Duration.ofSeconds(9), duration);
-      //  SoundFilter filter = new DecayFilter(duration, 3);
+        SoundFilter filter = new DecayFilter(duration, 3);
       //  SoundFilter filter = new IdentityFilter();
-        SoundFilter filter = new SawToothFilter();
-        SamplesUtil.save( filter.filter(sound.samples()), sound.format(), "saw_tooth.wav");
+      //  SoundFilter filter = new SawToothFilter();
+        SamplesUtil.save( filter.filter(sound.samples()), sound.format(), "sine.wav");
         System.out.println("done");
     }
 }

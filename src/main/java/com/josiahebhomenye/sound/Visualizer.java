@@ -22,17 +22,17 @@ public class Visualizer extends JFrame {
         GraphicsDevice dev = env.getDefaultScreenDevice();
         DisplayMode mode = dev.getDisplayMode();
         setSize(mode.getWidth(), 400);
-        canvas = new Canvas(data, format);
-        int max = (int)Math.ceil(1/canvas.resolution);
-        slider = new JSlider(1, max, (int)(canvas.resolution * max));
+        slider = new JSlider(0, data.length, 0);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         slider.setPaintTrack(true);
+        slider.setBackground(Color.black);
+        slider.setForeground(Color.GREEN);
+        canvas = new Canvas(data, format);
 
         slider.addChangeListener(e -> {
             SwingUtilities.invokeLater(() -> {
-                canvas.resolution = slider.getValue() * (1.0f/slider.getMaximum());
-                canvas.updateView();
+                canvas.updateView(slider.getValue());
                 canvas.repaint();
             });
         });
@@ -56,19 +56,11 @@ public class Visualizer extends JFrame {
         int pos;
 
         public Canvas(byte[] data, AudioFormat format){
-            resolution = 0.001f;
+          //  resolution = 0.001f;
+            resolution = 1f;
             this.data = data;
             this.format = format;
-            updateView();
-
-            setBackground(Color.BLACK);
-            int width = (int)(Visualizer.this.getWidth());
-            int height = (int)(Visualizer.this.getHeight());
-            setSize(width, height);
-        }
-
-        public void updateView(){
-            int length =  (int)(data.length * resolution);
+            int length =  (int)(format.getSampleRate() * resolution * format.getFrameSize());
             view = new byte[length];
             buffer = ByteBuffer.wrap(view);
             if(format.isBigEndian()){
@@ -76,9 +68,18 @@ public class Visualizer extends JFrame {
             }else{
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
             }
+            updateView(length);
+            setBackground(Color.BLACK);
+            int width = (int)(Visualizer.this.getWidth());
+            int height = (int)(Visualizer.this.getHeight());
+            setSize(width, height);
+        }
 
+        public void updateView(int pos){
+            int channel0Pos = pos % 2 == 0 ? pos : pos-1;
+            int length = Math.min(view.length,slider.getMaximum() - pos);
+            System.arraycopy(data, channel0Pos, view, 0, length);
 
-            System.arraycopy(data, 0, view, 0, length);
         }
 
         @Override
